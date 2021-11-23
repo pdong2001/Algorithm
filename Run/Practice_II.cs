@@ -20,9 +20,9 @@ namespace Run
             return -1;
         }
 
-        public static int BuiltInBinarySearch(int[] arr, int x)
+        public static int BuiltInBinarySearch(List<int> arr, int x)
         {
-            return arr.ToList().BinarySearch(x);
+            return arr.BinarySearch(x);
         }
 
         public static int BinarySearch(int[] arr, int x)
@@ -55,23 +55,68 @@ namespace Run
             arr.Sort();
             x = arr[x];
             var sortedArr = arr.ToArray();
+            List<int> list = sortedArr.ToList();
 
-            Common.Monitoring(() =>
+            var t1 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Tìm kiếm tuần tự : " + LinearSearch(sortedArr, x));
+                var index = LinearSearch(sortedArr, x);
+                var res = "Tìm kiếm tuần tự (vị trí): " + index + "\n";
+                res += "Tìm kiếm tuần tự (giá trị): " + sortedArr[index] + "\n";
+                return res;
             });
 
-            Common.Monitoring(() =>
+
+            var t2 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Tìm kiếm nhị phân xây sẵn : " + BuiltInBinarySearch(sortedArr, x));
+                var index = BuiltInBinarySearch(list, x);
+                var res = "Tìm kiếm nhị phân xây sẵn (vị trí): " + index + "\n";
+                res += "Tìm kiếm nhị phân xây sẵn (giá trị): " + sortedArr[index] + "\n";
+                return res;
             });
 
-            Common.Monitoring(() =>
+            var t3 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Tìm kiếm nhị phân : " + BinarySearch(sortedArr, x));
+                var index = BinarySearch(sortedArr, x);
+                var res = "Tìm kiếm nhị phân (vị trí): " + index + "\n";
+                res += "Tìm kiếm nhị phân (giá trị): " + sortedArr[index] + "\n";
+                return res;
             });
+
+            var t4 = Common.MonitoringAsync(() =>
+            {
+                var index = BinarySearchRecursive(sortedArr,0,sortedArr.Length, x);
+                var res = "Tìm kiếm nhị phân đệ quy (vị trí): " + index + "\n";
+                res += "Tìm kiếm nhị phân đệ quy (giá trị): " + sortedArr[index] + "\n";
+                return res;
+            });
+            Task.WaitAll(t1, t2, t3, t4);
         }
 
+        public static int BinarySearchRecursive(int[] arr, int l, int r, int x)
+        {
+            if (r >= l)
+            {
+                int mid = l + (r - l) / 2;
+
+                // If the element is present at the middle
+                // itself
+                if (arr[mid] == x)
+                    return mid;
+
+                // If element is smaller than mid, then
+                // it can only be present in left subarray
+                if (arr[mid] > x)
+                    return BinarySearchRecursive(arr, l, mid - 1, x);
+
+                // Else the element can only be present
+                // in right subarray
+                return BinarySearchRecursive(arr, mid + 1, r, x);
+            }
+
+            // We reach here when element is not
+            // present in array
+            return -1;
+        }
 
         public static int Min(int[] a, int left, int right)
         {
@@ -79,6 +124,7 @@ namespace Run
             int m = Min(a, left + 1, right);
             return (a[left] < m) ? a[left] : m;
         }
+
         public static int Max(int[] a, int left, int right)
         {
             if (left == right) return a[left];
@@ -131,7 +177,6 @@ namespace Run
             });
         }
 
-
         public static int[] BestArrayN3(int[] arr)
         {
             int best = int.MinValue;
@@ -181,6 +226,30 @@ namespace Run
             return arr.Skip(startIndex).Take(endIndex - startIndex + 1).ToArray();
         }
 
+        public static int BestArr(int[] arr, int best = int.MinValue, int sum = 0)
+        {
+            if (arr.Length == 0)
+            {
+                return best;
+            }
+            else
+            {
+                if (sum + arr[0] < arr[0])
+                {
+                    sum = arr[0];
+                }
+                else
+                {
+                    sum += arr[0];
+                }
+                if (best < sum)
+                {
+                    best = sum;
+                }
+                return BestArr(arr.Skip(1).ToArray(), best, sum);
+            }
+        }
+
         public static int[] BestArrayN(int[] arr)
         {
             int best = int.MinValue, sum = 0;
@@ -212,26 +281,214 @@ namespace Run
         {
             var arr = Common.RandomArray(n, -n, n);
 
-            Common.Monitoring(() =>
+            Console.WriteLine("Số phần tử của mảng:" + arr.Length);
+
+            Console.WriteLine($"ai thuộc [{-n},{n}]");
+
+            Console.WriteLine("Tổng mảng: " + arr.Sum());
+
+            Console.WriteLine();
+
+            var t1 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Giải thuật 1 (N^3): ");
+                var res = "Giải thuật 1 (N^3): ";
                 int sum = 0;
                 BestArrayN3(arr).ToList().ForEach(a => sum += a);
-                Console.WriteLine(sum);
+                return res += sum + "\n";
             });
-            Common.Monitoring(() =>
+
+            var t2 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Giải thuật 2 (N^2): ");
+                var res = "Giải thuật 2 (N^2): ";
                 int sum = 0;
                 BestArrayN2(arr).ToList().ForEach(a => sum += a);
-                Console.WriteLine(sum);
+                return res += sum + "\n";
             });
-            Common.Monitoring(() =>
+
+            var t3 = Common.MonitoringAsync(() =>
             {
-                Console.WriteLine("Giải thuật 3 (N): ");
+                var res = "Giải thuật 3 (N): ";
                 int sum = 0;
                 BestArrayN(arr).ToList().ForEach(a => sum += a);
-                Console.WriteLine(sum);
+                return res += sum + "\n";
+            });
+
+            var t4 = Common.MonitoringAsync(() =>
+            {
+                var res = "Giải thuật 4 (N): ";
+                int sum = 0;
+                sum = BestArr(arr);
+                return res += sum + "\n";
+            });
+
+            Task.WaitAll(t1, t2, t3, t4);
+        }
+
+        private static void Quick_Sort1(int[] arr, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivot = Partition1(arr, left, right);
+
+                if (pivot > 1)
+                {
+                    Quick_Sort1(arr, left, pivot - 1);
+                }
+                if (pivot + 1 < right)
+                {
+                    Quick_Sort1(arr, pivot + 1, right);
+                }
+            }
+        }
+
+        private static int Partition1(int[] arr, int left, int right)
+        {
+            int pivot = arr[left];
+            while (true)
+            {
+                while (arr[left] < pivot)
+                {
+                    left++;
+                }
+
+                while (arr[right] > pivot)
+                {
+                    right--;
+                }
+                if (left < right)
+                {
+                    if (arr[left] == arr[right]) return right;
+
+                    int temp = arr[left];
+                    arr[left] = arr[right];
+                    arr[right] = temp;
+                }
+                else
+                {
+                    return right;
+                }
+            }
+        }
+
+        private static void Quick_Sort2(int[] arr, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivot = Partition1(arr, left, right);
+
+                if (pivot > 1)
+                {
+                    Quick_Sort2(arr, left, pivot - 1);
+                }
+                if (pivot + 1 < right)
+                {
+                    Quick_Sort2(arr, pivot + 1, right);
+                }
+            }
+        }
+
+        static public int Partition2(int[] arr, int left, int right)
+        {
+            int pivot;
+
+            int mid = (left + right) / 2;
+            pivot = arr[mid];
+
+            while (true)
+            {
+                while (arr[left] < pivot)
+                {
+                    left++;
+                }
+                while (arr[right] > pivot)
+                {
+                    right--;
+                }
+                if (left < right)
+                {
+                    int temp = arr[right];
+                    arr[right] = arr[left];
+                    arr[left] = temp;
+                }
+                else
+                {
+                    return mid;
+                }
+            }
+        }
+
+        private static void Quick_Sort3(int[] arr, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivot = Partition1(arr, left, right);
+
+                if (pivot > 1)
+                {
+                    Quick_Sort3(arr, left, pivot - 1);
+                }
+                if (pivot + 1 < right)
+                {
+                    Quick_Sort3(arr, pivot + 1, right);
+                }
+            }
+        }
+
+        static public int Partition3(int[] arr, int left, int right)
+        {
+            int pivot;
+
+            pivot = arr[right];
+
+            while (true)
+            {
+                while (arr[left] < pivot)
+                {
+                    left++;
+                }
+                while (arr[right] > pivot)
+                {
+                    right--;
+                }
+                if (left < right)
+                {
+                    int temp = arr[right];
+                    arr[right] = arr[left];
+                    arr[left] = temp;
+                }
+                else
+                {
+                    return left;
+                }
+            }
+        }
+
+        public static void TestSort(int n)
+        {
+            int[] arr = Common.RandomArray(n, -n, n);
+
+            Common.Monitoring(() =>
+            {
+                var temp = arr.Clone() as int[];
+                Quick_Sort1(temp, 0, n - 1);
+                temp.ToList().ForEach(i => Console.Write(i + "; "));
+                Console.WriteLine("Phương pháp 1");
+            });
+
+            Common.Monitoring(() =>
+            {
+                var temp = arr.Clone() as int[];
+                Quick_Sort2(temp, 0, n - 1);
+                temp.ToList().ForEach(i => Console.Write(i + "; "));
+                Console.WriteLine("Phương pháp 2");
+            });
+
+            Common.Monitoring(() =>
+            {
+                var temp = arr.Clone() as int[];
+                Quick_Sort3(temp, 0, n - 1);
+                temp.ToList().ForEach(i => Console.Write(i + "; "));
+                Console.WriteLine("Phương pháp 3");
             });
         }
     }

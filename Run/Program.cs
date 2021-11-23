@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Run
 {
@@ -73,7 +74,7 @@ namespace Run
             #endregion
 
             #region 2.1
-            //Practice_II.TestSearch(1000000, 901239);
+            //Practice_II.TestSearch(10000000, 9001239);
             #endregion
 
             #region 2.2
@@ -81,13 +82,45 @@ namespace Run
             #endregion
 
             #region 2.3
-            Practice_II.TestBestArray(1000);
+            //Practice_II.TestBestArray(15000);
             #endregion
+
+            #region QuickSort
+            //Practice_II.TestSort(10);
+            #endregion
+
+            //Common.HoanViMang();
+
+            //TestFibonaci(40);
+
+            //Practice_III.TestSort(50000000);
+
+            Practice_III.TestDoubleFactorial(3);
+
         }
         public static string Input(object Text)
         {
             Console.Write(Text);
             return Console.ReadLine();
+        }
+
+        public static void TestFibonaci(int n)
+        {
+            var t1 = Common.MonitoringAsync(() =>
+            {
+                var res = "Đệ quy : ";
+                var f = Dynamic.FibonaciRecursive(n);
+                return res += f + "\n";
+            });
+
+            var t2 = Common.MonitoringAsync(() =>
+            {
+                var res = "Quy hoạch động : ";
+                var f = Dynamic.FibonaciDynamic(n);
+                return res += f + "\n";
+            });
+
+            Task.WaitAll(t1, t2);
         }
     }
 }
