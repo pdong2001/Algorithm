@@ -78,11 +78,11 @@ namespace Run
             #endregion
 
             #region 2.2
-            //Practice_II.TestMinMax(10000);
+            //Practice_II.TestMinMax(10000000);
             #endregion
 
             #region 2.3
-            //Practice_II.TestBestArray(15000);
+            Practice_II.TestBestArray(15000);
             #endregion
 
             #region QuickSort
@@ -93,9 +93,13 @@ namespace Run
 
             //TestFibonaci(40);
 
-            //Practice_III.TestSort(50000000);
+            //Practice_III.TestSort(10000000);
 
-            Practice_III.TestDoubleFactorial(3);
+            //Practice_III.Strassen.TestStrassen(6);
+
+            //Practice_IV.TestLCS(18);
+
+            //Practice_III.TestDoubleFactorial(3);
 
         }
         public static string Input(object Text)

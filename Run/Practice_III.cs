@@ -1,4 +1,5 @@
 ﻿using BinaryTree;
+using PhuongPhapTinh;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,212 +10,44 @@ namespace Run
 {
     public static class Practice_III
     {
-        public static int[] MergeSort(this int[] array)
-        {
-            int[] left;
-            int[] right;
-            int[] result = new int[array.Length];
-            //As this is a recursive algorithm, we need to have a base case to 
-            //avoid an infinite recursion and therfore a stackoverflow
-            if (array.Length <= 1)
-                return array;
-            // The exact midpoint of our array  
-            int midPoint = array.Length / 2;
-            //Will represent our 'left' array
-            left = new int[midPoint];
-
-            //if array has an even number of elements, the left and right array will have the same number of 
-            //elements
-            if (array.Length % 2 == 0)
-                right = new int[midPoint];
-            //if array has an odd number of elements, the right array will have one more element than left
-            else
-                right = new int[midPoint + 1];
-            //populate left array
-            for (int i = 0; i < midPoint; i++)
-                left[i] = array[i];
-            //populate right array   
-            int x = 0;
-            //We start our index from the midpoint, as we have already populated the left array from 0 to midpont
-            for (int i = midPoint; i < array.Length; i++)
-            {
-                right[x] = array[i];
-                x++;
-            }
-            //Recursively sort the left array
-            left = MergeSort(left);
-            //Recursively sort the right array
-            right = MergeSort(right);
-            //Merge our two sorted arrays
-            result = merge(left, right);
-            return result;
-        }
-
-        //This method will be responsible for combining our two sorted arrays into one giant array
-        private static int[] merge(int[] left, int[] right)
-        {
-            int resultLength = right.Length + left.Length;
-            int[] result = new int[resultLength];
-            //
-            int indexLeft = 0, indexRight = 0, indexResult = 0;
-            //while either array still has an element
-            while (indexLeft < left.Length || indexRight < right.Length)
-            {
-                //if both arrays have elements  
-                if (indexLeft < left.Length && indexRight < right.Length)
-                {
-                    //If item on left array is less than item on right array, add that item to the result array 
-                    if (left[indexLeft] <= right[indexRight])
-                    {
-                        result[indexResult] = left[indexLeft];
-                        indexLeft++;
-                        indexResult++;
-                    }
-                    // else the item in the right array wll be added to the results array
-                    else
-                    {
-                        result[indexResult] = right[indexRight];
-                        indexRight++;
-                        indexResult++;
-                    }
-                }
-                //if only the left array still has elements, add all its items to the results array
-                else if (indexLeft < left.Length)
-                {
-                    result[indexResult] = left[indexLeft];
-                    indexLeft++;
-                    indexResult++;
-                }
-                //if only the right array still has elements, add all its items to the results array
-                else if (indexRight < right.Length)
-                {
-                    result[indexResult] = right[indexRight];
-                    indexRight++;
-                    indexResult++;
-                }
-            }
-            return result;
-        }
-
-        private static void Quick_Sort(int[] arr, int left, int right)
-        {
-            if (left < right)
-            {
-                int pivot = Partition(arr, left, right);
-
-                if (pivot > 1)
-                {
-                    Quick_Sort(arr, left, pivot - 1);
-                }
-                if (pivot + 1 < right)
-                {
-                    Quick_Sort(arr, pivot + 1, right);
-                }
-            }
-
-        }
-
-        private static int Partition(int[] arr, int left, int right)
-        {
-            int pivot = arr[left];
-            while (true)
-            {
-
-                while (arr[left] < pivot)
-                {
-                    left++;
-                }
-
-                while (arr[right] > pivot)
-                {
-                    right--;
-                }
-
-                if (left < right)
-                {
-                    if (arr[left] == arr[right]) return right;
-
-                    int temp = arr[left];
-                    arr[left] = arr[right];
-                    arr[right] = temp;
-
-
-                }
-                else
-                {
-                    return right;
-                }
-            }
-        }
-
-        public static void QuickSort(this int[] arr)
-        {
-            Quick_Sort(arr, 0, arr.Length - 1);
-        }
-
-        public static void BubbleSort(this int[] arr)
-        {
-            int n = arr.Length;
-            for (int i = 0; i < n - 1; i++)
-                for (int j = 0; j < n - i - 1; j++)
-                    if (arr[j] > arr[j + 1])
-                    {
-                        // swap temp and arr[i]
-                        int temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                    }
-        }
-
-        public static BTree ToBTree(this int[] arr)
-        {
-            return new BTree(arr);
-        }
-
         public static void TestSort(int n)
         {
             int[] arr = Common.RandomArray(n, -n, n);
             int[] temp = arr.Clone() as int[];
-            //temp.Print();
-            Common.Monitoring(() =>
-            {
-                temp.QuickSort();
-                Console.WriteLine("Quick sort: ");
-            });
-            //temp.Print();
+            Console.WriteLine("Kích thước mảng: " + string.Format("{0:n0}", arr.Length));
+            Console.WriteLine("50 phần tử đầu mảng: ");
+            temp.Print(Max: 50);
+
+            //Common.Monitoring(() =>
+            //{
+            //    temp.QuickSort();
+            //    Console.WriteLine("Quick sort: ");
+            //});
+            //temp.Print(Max: 50);
 
             temp = arr.Clone() as int[];
-
             Common.Monitoring(() =>
             {
                 temp = temp.MergeSort();
                 Console.WriteLine("Merge sort: ");
+                temp.Print(Max : 50);
             });
-            //temp.Print();
-            var list = arr.ToList();
-            Common.Monitoring(() =>
-            {
-                list.Sort();
-                Console.WriteLine("Bult in: ");
-            });
-            //list.ToArray().Print();
-            temp = arr.Clone() as int[];
+            //temp.Print(Max: 50);
+            //temp = arr.Clone() as int[];
             //Common.Monitoring(() =>
             //{
-            //    temp.BubbleSort();
-            //    Console.WriteLine("Bubble sort: ");
-            //    //temp.Print();
+            //    temp.IntroSort();
+            //    Console.WriteLine("Intro sort: ");
             //});
-
-        }
-        public static void Print(this int[] arr, bool NewLine = true)
-        {
-            arr.SkipLast(1).ToList().ForEach(i => Console.Write(i + "; "));
-            Console.Write(arr[arr.Length - 1]);
-            if (NewLine)
+            //temp.Print(Max : 50);
+            //list.Print(Max:50);
+            Common.Monitoring(() =>
             {
-                Console.WriteLine();
-            }
+                var list = new List<int>(arr);
+                list.Sort();
+                Console.WriteLine("C# Intro sort with sort helper: ");
+                list.Print(Max: 50);
+            });
         }
 
         public static ulong DoubleFactorialRecursive(int n)
@@ -248,6 +81,133 @@ namespace Run
             {
                 Console.WriteLine("Quy hoạch động: " + DoubleFactorialDynamic(n));
             });
+        }
+
+        public static class Strassen
+        {
+            public static void In(int[,] a, int n)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    Console.WriteLine();
+                    for (int j = 0; j < n; j++)
+                    {
+                        Console.Write(a[i,j]);
+                    }
+                }
+            }
+            public static void ChiaNho(int n, int[,] x, int[,] a, int[,] b, int[,] c, int[,] d)
+            {
+                int m = n / 2;
+
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < m; j++)
+                        a[i , j] = x[i , j];
+
+                for (int i = 0; i < m; i++)
+                    for (int j = m; j < n; j++)
+                        b[i , j - m] = x[i , j];
+
+                for (int i = m; i < n; i++)
+                    for (int j = 0; j < m; j++)
+                        c[(i - m) , j] = x[i , j];
+
+                for (int i = m; i < n; i++)
+                    for (int j = m; j < n; j++)
+                        d[(i - m) , j - m] = x[i , j];
+            }
+            public static void CongMaTran(int n, int[,] a, int[,] b, int[,] c)
+            {
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        c[i , j] = a[i , j] + b[i , j];
+            }
+            public static void TruMaTran(int n, int[,] a, int[,] b, int[,] c)
+            {
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        c[i , j] = a[i , j] - b[i , j];
+            }
+            public static void NhanMaTran(int[,] a, int[,] b, int[,] c)
+            {
+                int m1, m2, m3, m4, m5, m6, m7;
+                m1 = (a[0 , 1] - a[1 , 1]) * (b[1 , 0] + b[1 , 1]);
+                m2 = (a[0 , 0] + a[1 , 1]) * (b[0 , 0] + b[1 , 1]);
+                m3 = (a[0 , 0] - a[1 , 0]) * (b[0 , 0] + b[0 , 1]);
+                m4 = (a[0 , 0] + a[0 , 1]) * b[1 , 1];
+                m5 = a[0 , 0] * (b[0 , 1] - b[1 , 1]);
+                m6 = a[1 , 1] * (b[1 , 0] - b[0 , 0]);
+                m7 = (a[1 , 0] + a[1 , 1]) * b[0 , 0];
+
+                c[0 , 0] = m1 + m2 - m4 + m6;
+                c[0 , 1] = m4 + m5;
+                c[1 , 0] = m6 + m7;
+                c[1 , 1] = m2 - m3 + m5 - m7;
+            }
+            public static void ToHop(int n, int[,] x, int[,] a, int[,] b, int[,] c, int[,] d)
+            {
+                int m = n / 2;
+
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < m; j++)
+                        x[i , j] = a[i , j];
+
+                for (int i = 0; i < m; i++)
+                    for (int j = m; j < n; j++)
+                        x[i , j] = b[i , j - m];
+
+                for (int i = m; i < n; i++)
+                    for (int j = 0; j < m; j++)
+                        x[i , j] = c[(i - m) , j];
+
+                for (int i = m; i < n; i++)
+                    for (int j = m; j < n; j++)
+                        x[i , j] = d[(i - m) , j - m];
+            }
+            public static void Multi(int[,] a, int[,] b, int[,] c, int n)
+            {
+                if (n == 2)
+                    NhanMaTran(a, b, c);
+                else
+                {
+                    int[,] d1 = new int[n, n];
+                    int[,] d2 = new int[n ,n];
+                    int[,] a00 = new int[n, n];
+                    int[,] a01 = new int[n, n];
+                    int[,] a10 = new int[n, n];
+                    int[,] a11 = new int[n, n];
+                    int[,] b00 = new int[n, n];
+                    int[,] b01 = new int[n, n];
+                    int[,] b10 = new int[n, n];
+                    int[,] b11 = new int[n, n];
+                    int[,] c00 = new int[n, n];
+                    int[,] c01 = new int[n, n];
+                    int[,] c10 = new int[n, n];
+                    int[,]c11 = new int[n , n];
+
+                    ChiaNho(n, a, a00, a01, a10, a11);
+                    ChiaNho(n, b, b00, b01, b10, b11);
+                    ChiaNho(n, c, c00, c01, c10, c11);
+
+                    Multi(a00, b00, d1, n / 2);
+                    Multi(a01, b10, d2, n / 2);
+                    CongMaTran(n / 2, d1, d2, c00);
+
+                    Multi(a00, b01, d1, n / 2);
+                    Multi(a01, b11, d2, n / 2);
+                    CongMaTran(n / 2, d1, d2, c01);
+
+                    Multi(a10, b00, d1, n / 2);
+                    Multi(a11, b10, d2, n / 2);
+                    CongMaTran(n / 2, d1, d2, c10);
+
+                    Multi(a10, b01, d1, n / 2);
+                    Multi(a11, b11, d2, n / 2);
+                    CongMaTran(n / 2, d1, d2, c11);
+
+                    ToHop(n, a, c00, c01, c10, c11);
+                }
+            }
         }
     }
 }
