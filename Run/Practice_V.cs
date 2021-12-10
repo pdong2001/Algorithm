@@ -39,10 +39,7 @@ namespace Run
             Console.WriteLine(data);
             Common.WriteToFile(data.Trim('\t'));
             string[] a = Common.ReadFormFile().Split('\t');
-            for (int i = 0; i < a.Length; i++)
-            {
-                list.Add(Schedule.Parse(a[i]));
-            }
+            list = a.Select(s => Schedule.Parse(s)).ToList();
             Console.Write("Đầu vào : ");
             list.Print();
             list.Sort(new Schedule.Comparer());
@@ -86,11 +83,7 @@ namespace Run
             var sd = data.Split('\n');
             maxWeight = int.Parse(sd[1]);
             var itemsData = sd[0].Split('\t');
-            List<Item> l = new(itemsData.Length);
-            for (int i = 0; i < itemsData.Length; i++)
-            {
-                l.Add(Item.Parse(itemsData[i]));
-            }
+            List<Item> l = itemsData.Select(i => Item.Parse(i)).ToList();
             Console.Write("Đầu vào : ");
             l.Print();
             Console.Write("Sắp xếp : ");
