@@ -82,7 +82,7 @@ namespace Run
             #endregion
 
             #region 2.3
-            Practice_II.TestBestArray(15000);
+            //Practice_II.TestBestArray(15000);
             #endregion
 
             #region QuickSort
@@ -101,6 +101,13 @@ namespace Run
 
             //Practice_III.TestDoubleFactorial(3);
 
+            //Practice_V.TestRutTien();
+
+            //Practice_V.TestScheduled();
+
+            //Practice_V.TestBalo();
+
+            Practice_V.TestSumArray();
         }
         public static string Input(object Text)
         {

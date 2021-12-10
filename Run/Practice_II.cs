@@ -267,6 +267,30 @@ namespace Run
             return arr.Skip(startIndex).Take(endIndex - startIndex + 1).ToArray();
         }
 
+        public static int BestArr(int[] arr, int best = int.MinValue, int sum = 0)
+        {
+            if (arr.Length == 0)
+            {
+                return best;
+            }
+            else
+            {
+                if (sum + arr[0] < arr[0])
+                {
+                    sum = arr[0];
+                }
+                else
+                {
+                    sum += arr[0];
+                }
+                if (best < sum)
+                {
+                    best = sum;
+                }
+                return BestArr(arr.Skip(1).ToArray(), best, sum);
+            }
+        }
+
         public static int[] BestArrayN(int[] arr)
         {
             int best = int.MinValue, sum = 0;
@@ -300,7 +324,7 @@ namespace Run
 
             Console.WriteLine("Số phần tử của mảng:" + arr.Length);
 
-            Console.WriteLine($"a[i] thuộc [{-n},{n}]");
+            Console.WriteLine($"ai thuộc [{-n},{n}]");
 
             Console.WriteLine("Tổng mảng: " + arr.Sum());
 
@@ -312,7 +336,7 @@ namespace Run
                 int sum = 0;
                 BestArrayN3(arr.Take(arr.Length/10).ToArray()).ToList().ForEach(a => sum += a);
                 res += sum + "\n";
-                res += "(Giảm 90% số phần tử)\n";
+                res += "(Đã giảm 90% số lượng phần tử)\n";
                 return res;
             });
 
@@ -332,7 +356,15 @@ namespace Run
                 return res += sum + "\n";
             });
 
-            Task.WaitAll(t1, t2, t3);
+            var t4 = Common.MonitoringAsync(() =>
+            {
+                var res = "Giải thuật 4 (N): ";
+                int sum = 0;
+                sum = BestArr(arr);
+                return res += sum + "\n";
+            });
+
+            Task.WaitAll(t1, t2, t3, t4);
         }
 
         private static void Quick_Sort1(int[] arr, int left, int right)

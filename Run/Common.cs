@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -466,5 +467,21 @@ namespace Run
             }
         }
         #endregion
+
+
+        public static void WriteToFile(object value)
+        {
+            StreamWriter writer = new StreamWriter("data.txt", false);
+            writer.Write(value);
+            writer.Close();
+        }
+
+        public static string ReadFormFile()
+        {
+            StreamReader reader = new StreamReader("data.txt");
+            var rs = reader.ReadToEnd();
+            reader.Close();
+            return rs;
+        }
     }
 }
