@@ -97,7 +97,7 @@ namespace Run
 
             //Practice_III.Strassen.TestStrassen(6);
 
-            //Practice_IV.TestLCS(18);
+            Practice_IV.TestLCS(18);
 
             //Practice_III.TestDoubleFactorial(3);
 
@@ -107,7 +107,7 @@ namespace Run
 
             //Practice_V.TestBalo();
 
-            Practice_V.TestSumArray();
+            //Practice_V.TestSumArray();
         }
         public static string Input(object Text)
         {
