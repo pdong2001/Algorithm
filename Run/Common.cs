@@ -280,7 +280,7 @@ namespace Run
             return result;
         }
 
-        private static void Quick_Sort(int[] arr, int left, int right)
+        private static void Quick_Sort(IList<int> arr, int left, int right)
         {
             if (left < right)
             {
@@ -298,7 +298,7 @@ namespace Run
 
         }
 
-        private static int Partition(int[] arr, int left, int right)
+        private static int Partition(IList<int> arr, int left, int right)
         {
             int pivot = arr[left];
             while (true)
@@ -321,8 +321,6 @@ namespace Run
                     int temp = arr[left];
                     arr[left] = arr[right];
                     arr[right] = temp;
-
-
                 }
                 else
                 {
@@ -331,7 +329,7 @@ namespace Run
             }
         }
 
-        private static int PartitionForIntro(int[] data, int left, int right)
+        private static int PartitionForIntro(IList<int> data, int left, int right)
         {
             int pivot = data[right];
             int temp;
@@ -353,6 +351,50 @@ namespace Run
 
             return i;
         }
+
+        public static bool IsSorted(this int[] arr)
+        {
+            for (int i = 0; i < arr.Length - 1; i++)
+            {
+                if (arr[i] > arr[i+1])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static void quickSort(this int[] arr, int low, int high)
+        {
+            if (low < high)
+            {
+
+                /* pi is partitioning index,
+                arr[p] is now
+                at right place */
+                int pi = partition_r(arr, low, high);
+
+                // Separately sort elements before
+                // partition and after partition
+                quickSort(arr, low, pi - 1);
+                quickSort(arr, pi + 1, high);
+            }
+        }
+
+        public static int partition_r(int[] arr, int low, int high)
+        {
+            // Generate a random number in between
+            // low .. high
+            Random rd = new();
+            int random = low + rd.Next() % (high - low);
+
+            // Swap A[random] with A[high]
+            arr[random] += arr[high];
+            arr[high] = arr[random] = arr[high];
+            arr[random] -= arr[high];
+            return Partition(arr, low, high);
+        }
+
 
         public static void QuickSort(this int[] arr)
         {
@@ -415,7 +457,7 @@ namespace Run
             }
         }
 
-        private static void HeapSort(this int[] data)
+        public static void HeapSort(this int[] data)
         {
             int heapSize = data.Length;
 
@@ -457,7 +499,7 @@ namespace Run
             }
         }
 
-        private static void QuickSortRecursive(this int[] data, int left, int right)
+        public static void QuickSortRecursive(this IList<int> data, int left, int right)
         {
             if (left < right)
             {
@@ -465,6 +507,11 @@ namespace Run
                 QuickSortRecursive(data, left, q - 1);
                 QuickSortRecursive(data, q + 1, right);
             }
+        }
+
+        public static void QuickSortRecursive(this IList<int> data)
+        {
+            QuickSortRecursive(data, 0, data.Count - 1);
         }
         #endregion
 
@@ -482,6 +529,18 @@ namespace Run
             var rs = reader.ReadToEnd();
             reader.Close();
             return rs;
+        }
+
+        public static int SumOfNumberRecursive(int n, int k = 10)
+        {
+            if (n < k)
+            {
+                return n % k / (k / 10);
+            }
+            else
+            {
+                return n % k / (k / 10) + SumOfNumberRecursive(n, k * 10);
+            }    
         }
     }
 }
