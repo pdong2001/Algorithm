@@ -111,7 +111,7 @@ namespace Run
 
             //Console.WriteLine(Common.SumOfNumberRecursive(123129801));
 
-            Test.TestList(10);
+            Test.TestList(50000);
         }
         public static string Input(object Text)
         {

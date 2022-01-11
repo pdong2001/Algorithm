@@ -12,6 +12,10 @@ namespace Run
 
         public SortedList(List<IIndex<T>> indices)
         {
+            if (indices.Count == 0)
+            {
+                throw new Exception("No index found");
+            }
             Indices = new(indices);
         }
 
@@ -47,6 +51,15 @@ namespace Run
             base.Insert(minNum, value);
         }
 
+        public new void AddRange(IEnumerable<T> values)
+        {
+            values = values.ToArray();
+            foreach (var item in values)
+            {
+                this.Add(item);
+            }
+        }
+
         public new int IndexOf(T value)
         {
             int minNum = 0;
@@ -77,6 +90,7 @@ namespace Run
         where TCol : IComparable
     {
         public int Order { get; set; }
+
         public Func<T, TCol> Column { get; private set; }
 
         public Index(Func<T, TCol> Column, int Order)
@@ -100,6 +114,7 @@ namespace Run
             return Column(x).CompareTo(Column(y));
         }
     }
+
     public interface IIndex<T>
     {
         public int Order { get; set; }
@@ -164,44 +179,50 @@ namespace Run
             personIndices.Add(new Index<Person, string>(i => i.Name, 2));
             personIndices.Add(new Index<Person, DateTime>(i => i.Birth, 3));
             SortedList<Person> tablePerson = new(personIndices);
-            //Common.Monitoring(() =>
-            //{
-            //    for (int i = 0; i < n; i++)
-            //    {
-            //        table.Add(rd.Next(-n, n));
-            //    }
-            //    Console.WriteLine(table.ToArray().IsSorted());
-            //});
-            //Common.Monitoring(() =>
-            //{
-            //    list.Add(rd.Next(-n, n));
-            //    for (int i = 0; i < n - 1; i++)
-            //    {
-            //        bool Added = false;
-            //        var value = rd.Next(-n, n);
-            //        for (int j = 0; j < i+1; j++)
-            //        {
-            //            if (list[j] > value)
-            //            {
-            //                list.Insert(j, value);
-            //                Added = true;
-            //                break;
-            //            }
-            //        }
-            //        if (!Added)
-            //        {
-            //            list.Add(value);
-            //        }
-            //    }
-            //    Console.WriteLine(list.ToArray().IsSorted());
-            //});
+            Common.Monitoring(() =>
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    table.Add(rd.Next(-n, n));
+                }
+                Console.WriteLine("Sử dụng tìm kiếm nhị phân:");
+                Console.WriteLine("Sắp xếp tăng dần:" + table.ToArray().IsSorted());
+            });
+            Common.Monitoring(() =>
+            {
+                list.Add(rd.Next(-n, n));
+                for (int i = 0; i < n - 1; i++)
+                {
+                    bool Added = false;
+                    var value = rd.Next(-n, n);
+                    for (int j = 0; j < i + 1; j++)
+                    {
+                        if (list[j] > value)
+                        {
+                            list.Insert(j, value);
+                            Added = true;
+                            break;
+                        }
+                    }
+                    if (!Added)
+                    {
+                        list.Add(value);
+                    }
+                }
+                Console.WriteLine("Sử dụng tìm kiếm tuần tự:");
+                Console.WriteLine("Sắp xếp tăng dần:" + list.ToArray().IsSorted());
+            });
             Common.Monitoring(() =>
             {
                 for (int i = n; i >= 0; i--)
                 {
-                    tablePerson.Add(new Person(i + 1, "Người"));
+                    tablePerson.Add(new Person(i + 1, $"Người {i}"));
                 }
-                tablePerson.ForEach(p => Console.WriteLine(p));
+                Console.WriteLine("Ứng dụng vào bảng dữ liệu người:");
+                Console.WriteLine("Ba Index được chỉ định lần lượt là:");
+                Console.WriteLine("ID, Tên, Ngày sinh");
+                Console.WriteLine("Mười người đầu danh sách:");
+                tablePerson.Take(10).ToList().ForEach(p => Console.WriteLine(p));
             });
         }
     }
